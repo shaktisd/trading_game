@@ -660,7 +660,10 @@ def main():
         # Position status and trading controls
         if st.session_state.position is not None:
             pnl = calculate_current_pnl()
-            st.info(f"**{st.session_state.position} Position** @ ₹{st.session_state.entry_price:,.0f} | Qty: {st.session_state.position_size} | P&L: **₹{pnl:+,.0f}**")
+            if pnl >= 0:
+                st.success(f"**{st.session_state.position} Position** @ ₹{st.session_state.entry_price:,.0f} | Qty: {st.session_state.position_size} | P&L: **₹{pnl:+,.0f}**")
+            else:
+                st.error(f"**{st.session_state.position} Position** @ ₹{st.session_state.entry_price:,.0f} | Qty: {st.session_state.position_size} | P&L: **₹{pnl:+,.0f}**")
         
         # Trading buttons - single row layout for visibility
         if st.session_state.day_ended:
