@@ -647,7 +647,7 @@ def main():
             if idx >= 0:
                 current_time = st.session_state.day_data.index[idx].strftime('%H:%M')
         
-        st.subheader(f"{st.session_state.current_ticker} | {st.session_state.current_date} | {current_time} | ₹{current_price:,.2f} | ⏱️ {candles_remaining} left")
+        st.markdown(f"**{st.session_state.current_ticker}** | {st.session_state.current_date} | {current_time} | ₹{current_price:,.2f} | ⏱️ {candles_remaining} left")
         
         # Chart - full width
         chart = create_chart()
