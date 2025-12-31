@@ -31,8 +31,8 @@ warnings.filterwarnings('ignore')
 st.set_page_config(
     page_title="📈 Market Prediction Game",
     page_icon="📈",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    layout="centered",
+    initial_sidebar_state="collapsed"
 )
 
 # ============================================================================
@@ -63,82 +63,143 @@ COLORS = {
 }
 
 # ============================================================================
-# CUSTOM CSS
+# CUSTOM CSS - Mobile Friendly
 # ============================================================================
 st.markdown("""
 <style>
-    /* Increase top padding to prevent cutoff */
+    /* Hide sidebar completely */
+    [data-testid="stSidebar"] {
+        display: none;
+    }
+    
+    /* Mobile-friendly container */
     .block-container {
-        padding-top: 3rem !important;
-        padding-bottom: 0rem !important;
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+        max-width: 100% !important;
     }
+    
     .main-header {
-        font-size: 1.2rem;
-        font-weight: bold;
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
         text-align: center;
-        padding: 0.3rem 0.5rem;
-        background: linear-gradient(90deg, #1e3a5f, #2d4a6f);
-        border-radius: 6px;
-        margin-bottom: 0.3rem;
-        color: #ffffff;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        border: 1px solid #3d5a80;
+        padding: 0.8rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        color: #ffffff !important;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        border: none;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
     }
-    /* Metric label styling */
-    .metric-label {
-        font-size: 14px;
-        color: #666;
-        margin-bottom: 2px;
-        font-weight: 500;
-    }
-    .metric-value {
-        font-size: 22px;
-        font-weight: bold;
-        color: #333;
-    }
-    .metric-delta {
-        font-size: 12px;
-        color: #888;
+    
+    /* Compact metric styling for mobile */
+    .metric-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
     }
     .metric-card {
-        background: linear-gradient(135deg, #1a1a2e, #0f3460);
+        flex: 1 1 45%;
+        min-width: 80px;
+        background: linear-gradient(135deg, #2d3748, #1a202c);
         border-radius: 10px;
-        padding: 1rem;
+        padding: 0.6rem;
         text-align: center;
-        border: 1px solid #30363d;
+        border: 1px solid #4a5568;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
-    .profit { color: #00ff88 !important; }
-    .loss { color: #ff4757 !important; }
-    .neutral { color: #ffd93d !important; }
-    .position-long {
-        background: linear-gradient(135deg, #00d4aa33, #00d4aa11);
-        border: 2px solid #00d4aa;
-        border-radius: 10px;
-        padding: 1rem;
+    .metric-label {
+        font-size: 11px !important;
+        color: #a0aec0 !important;
+        margin-bottom: 4px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
-    .position-short {
-        background: linear-gradient(135deg, #ff6b6b33, #ff6b6b11);
-        border: 2px solid #ff6b6b;
-        border-radius: 10px;
-        padding: 1rem;
+    .metric-value {
+        font-size: 18px !important;
+        font-weight: 700 !important;
+        color: #ffffff !important;
     }
+    .metric-delta {
+        font-size: 10px !important;
+        color: #a0aec0 !important;
+    }
+    
+    .profit { color: #48bb78 !important; }
+    .loss { color: #fc8181 !important; }
+    .neutral { color: #ecc94b !important; }
+    
+    /* Large touch-friendly buttons */
     .stButton>button {
         width: 100%;
         font-weight: bold;
+        font-size: 16px !important;
+        padding: 0.75rem 1rem !important;
+        min-height: 50px !important;
+        border-radius: 10px !important;
     }
-    /* Green LONG button */
-    [data-testid="stButton"]:has(button:contains("LONG")) button {
-        background-color: #00c853 !important;
-        border-color: #00c853 !important;
+    
+    /* Position info card */
+    .position-card {
+        background: linear-gradient(135deg, #2d3748, #1a202c);
+        border-radius: 10px;
+        padding: 0.8rem;
+        text-align: center;
+        margin-bottom: 0.5rem;
+        border: 2px solid #4a5568;
+        color: #ffffff !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
-    /* Red SHORT button */
-    [data-testid="stButton"]:has(button:contains("SHORT")) button {
-        background-color: #ff1744 !important;
-        border-color: #ff1744 !important;
+    .position-card strong {
+        color: #ffffff !important;
     }
-    .trade-history {
-        max-height: 200px;
-        overflow-y: auto;
+    .position-long {
+        border-color: #48bb78 !important;
+        background: linear-gradient(135deg, rgba(72, 187, 120, 0.2), rgba(72, 187, 120, 0.1)) !important;
+    }
+    .position-short {
+        border-color: #fc8181 !important;
+        background: linear-gradient(135deg, rgba(252, 129, 129, 0.2), rgba(252, 129, 129, 0.1)) !important;
+    }
+    
+    /* Compact chart */
+    .stPlotlyChart {
+        margin: 0 !important;
+    }
+    
+    /* Smaller expanders */
+    .streamlit-expanderHeader {
+        font-size: 14px !important;
+    }
+    
+    /* Stock info compact */
+    .stock-info {
+        text-align: center;
+        font-size: 14px !important;
+        padding: 0.6rem;
+        background: linear-gradient(135deg, #2d3748, #1a202c);
+        border-radius: 8px;
+        margin-bottom: 0.8rem;
+        color: #ffffff !important;
+        border: 1px solid #4a5568;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .stock-info strong {
+        color: #ecc94b !important;
+    }
+    
+    /* Tab styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        padding: 10px 20px;
+        font-weight: 600;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -557,17 +618,14 @@ def create_chart():
             row=2, col=1
         )
     
-    # Update layout
-    current_price = get_current_price()
-    current_time = visible_data.index[-1].strftime('%H:%M') if len(visible_data) > 0 else ""
-    
+    # Update layout - compact for mobile
     fig.update_layout(
-        title=f"📊 {st.session_state.current_ticker} | 📅 {st.session_state.current_date} | 🕐 {current_time} | ₹{current_price:,.2f}",
+        title=None,  # Remove title to save space on mobile
         template='plotly_dark',
-        height=400,
+        height=300,  # Shorter for mobile
         showlegend=False,
         xaxis_rangeslider_visible=False,
-        margin=dict(l=40, r=20, t=40, b=30),
+        margin=dict(l=35, r=10, t=10, b=25),
     )
     
     fig.update_xaxes(title_text="Time", row=2, col=1)
@@ -578,102 +636,111 @@ def create_chart():
 
 
 # ============================================================================
-# MAIN APP
+# MAIN APP - Mobile Friendly Layout
 # ============================================================================
 def main():
     init_game_state()
     
-    # Sidebar
-    with st.sidebar:
-        # Game title banner in sidebar
+    # Load tickers
+    tickers, company_names = load_nifty_500_tickers()
+    
+    # Main content area - no sidebar
+    if not st.session_state.game_started:
+        # Welcome screen - Mobile friendly
         st.markdown('<div class="main-header">🎮 Market Prediction Game 📈</div>', unsafe_allow_html=True)
-        st.markdown("")
-        st.header("🎯 Game Controls")
         
-        # Load tickers
-        tickers, company_names = load_nifty_500_tickers()
+        # Show overall stats if there are any trades
+        if st.session_state.total_trades > 0:
+            total_return = ((st.session_state.capital - st.session_state.initial_capital) / st.session_state.initial_capital) * 100
+            win_rate = (st.session_state.winning_trades / st.session_state.total_trades * 100) if st.session_state.total_trades > 0 else 0
+            
+            st.markdown(f'''
+            <div class="metric-row">
+                <div class="metric-card">
+                    <div class="metric-label">💼 Capital</div>
+                    <div class="metric-value">₹{st.session_state.capital:,.0f}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">📊 P&L</div>
+                    <div class="metric-value {"profit" if st.session_state.realized_pnl >= 0 else "loss"}">₹{st.session_state.realized_pnl:+,.0f}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">🎯 Trades</div>
+                    <div class="metric-value">{st.session_state.total_trades}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">✅ Win Rate</div>
+                    <div class="metric-value">{win_rate:.0f}%</div>
+                </div>
+            </div>
+            ''', unsafe_allow_html=True)
         
-        st.subheader("📊 Select Stock & Date")
+        # Stock Selection Section
+        st.markdown("### 🎯 Start Trading")
         
-        # Selection method
-        selection_method = st.radio(
-            "Selection Method:",
-            ["🎲 Random", "📝 Manual Selection"],
-            key="selection_method"
-        )
+        # Selection method tabs
+        tab1, tab2 = st.tabs(["🎲 Random", "📝 Manual"])
         
-        if selection_method == "🎲 Random":
-            if st.button("🎲 Generate Random Stock & Date", type="primary", width='stretch'):
-                # Pick random ticker
+        with tab1:
+            st.markdown("Get a random stock and date to trade:")
+            if st.button("🎲 Generate Random Stock", type="primary", use_container_width=True):
                 random_ticker = random.choice(tickers)
                 
-                with st.spinner(f"Loading {random_ticker} data (this may take a moment on first load)..."):
-                    # Download data (uses local file caching)
+                with st.spinner(f"Loading {random_ticker}..."):
                     stock_data = download_stock_data(random_ticker)
                     
                     if stock_data is not None and not stock_data.empty:
-                        # Get dates with sufficient data (at least 10 candles)
                         available_dates = get_available_dates_with_data(stock_data, min_candles=10)
                         
                         if not available_dates:
-                            st.error(f"No dates with sufficient data for {random_ticker}. Try again.")
-                            return
-                        
-                        # Pick a random date from valid dates
-                        selected_date = random.choice(available_dates)
-                        
-                        day_data = get_day_data(stock_data, selected_date)
-                        day_data = filter_market_hours(day_data)
-                        
-                        if day_data is not None and len(day_data) >= 5:
-                            reset_day()
-                            st.session_state.current_ticker = random_ticker
-                            st.session_state.stock_data = stock_data
-                            st.session_state.day_data = day_data
-                            st.session_state.current_date = selected_date
-                            st.session_state.game_started = True
-                            st.success(f"Loaded {random_ticker} for {selected_date} ({len(day_data)} candles)")
-                            st.rerun()
+                            st.error(f"No data for {random_ticker}. Try again.")
                         else:
-                            candle_count = len(day_data) if day_data is not None else 0
-                            st.error(f"Not enough data for this date (only {candle_count} candles). Try again.")
+                            selected_date = random.choice(available_dates)
+                            day_data = get_day_data(stock_data, selected_date)
+                            day_data = filter_market_hours(day_data)
+                            
+                            if day_data is not None and len(day_data) >= 5:
+                                reset_day()
+                                st.session_state.current_ticker = random_ticker
+                                st.session_state.stock_data = stock_data
+                                st.session_state.day_data = day_data
+                                st.session_state.current_date = selected_date
+                                st.session_state.game_started = True
+                                st.rerun()
+                            else:
+                                st.error("Not enough data. Try again.")
                     else:
-                        st.error(f"Could not load data for {random_ticker}")
+                        st.error(f"Could not load {random_ticker}")
         
-        else:  # Manual Selection
-            # Stock selection
+        with tab2:
             selected_ticker = st.selectbox(
                 "Select Stock:",
                 options=tickers,
-                format_func=lambda x: f"{x} - {company_names.get(x, '')[:30]}",
+                format_func=lambda x: f"{x} - {company_names.get(x, '')[:20]}",
                 key="manual_ticker"
             )
             
-            # Load stock data to get available dates
-            if st.button("📥 Load Stock Data", width='stretch', key="load_stock_btn"):
-                with st.spinner(f"Loading {selected_ticker} data..."):
+            if st.button("📥 Load Stock", use_container_width=True, key="load_stock_btn"):
+                with st.spinner(f"Loading {selected_ticker}..."):
                     stock_data = download_stock_data(selected_ticker)
                     if stock_data is not None:
                         st.session_state.temp_stock_data = stock_data
                         st.session_state.temp_ticker = selected_ticker
                         st.rerun()
             
-            # Show date selection if stock data is loaded
             if 'temp_stock_data' in st.session_state and st.session_state.temp_stock_data is not None:
                 stock_data = st.session_state.temp_stock_data
                 available_dates = get_available_dates_with_data(stock_data, min_candles=10)
                 
                 if available_dates:
-                    st.success(f"Found {len(available_dates)} dates with sufficient data")
-                    
                     selected_date = st.selectbox(
                         "Select Date:",
-                        options=available_dates[::-1],  # Most recent first
-                        format_func=lambda x: x.strftime("%Y-%m-%d (%A)"),
+                        options=available_dates[::-1],
+                        format_func=lambda x: x.strftime("%Y-%m-%d"),
                         key="manual_date"
                     )
                     
-                    if st.button("📈 Start Trading", type="primary", width='stretch'):
+                    if st.button("📈 Start Trading", type="primary", use_container_width=True):
                         day_data = get_day_data(stock_data, selected_date)
                         day_data = filter_market_hours(day_data)
                         
@@ -684,191 +751,159 @@ def main():
                             st.session_state.day_data = day_data
                             st.session_state.current_date = selected_date
                             st.session_state.game_started = True
-                            # Clear temp data
                             del st.session_state.temp_stock_data
                             del st.session_state.temp_ticker
                             st.rerun()
                         else:
-                            candle_count = len(day_data) if day_data is not None else 0
-                            st.error(f"Not enough data for this date (only {candle_count} candles).")
+                            st.error("Not enough data for this date.")
                 else:
-                    st.error("No dates with sufficient data found for this stock.")
+                    st.error("No valid dates found.")
         
-        st.divider()
-        
-        # Reset buttons
-        if st.button("🔄 New Day (Keep Capital)", width='stretch'):
-            reset_day()
-            st.session_state.game_started = False
-            st.rerun()
-        
-        if st.button("🔃 Reset Game", width='stretch'):
-            reset_game()
-            st.rerun()
-        
-        st.divider()
-        
-        # Game Rules
-        with st.expander("📜 Game Rules"):
+        # Game Rules in expander
+        with st.expander("📜 How to Play"):
             st.markdown("""
-            **Objective:** Predict market direction and profit!
+            **🎯 Objective:** Predict market direction!
             
-            **Rules:**
-            - Start with ₹1,00,000 capital
-            - View 15-minute candles
-            - Take LONG or SHORT positions
-            - Close before market end (auto-close)
+            **📈 LONG** = Price going UP  
+            **📉 SHORT** = Price going DOWN  
+            **⏭️ NEXT** = Reveal next candle  
+            **💰 CLOSE** = Lock in profit/loss
             
-            **Controls:**
-            - 📈 **LONG**: Buy expecting price UP
-            - 📉 **SHORT**: Sell expecting price DOWN
-            - ⏭️ **NEXT**: Skip to next candle
-            - 💰 **CLOSE**: Close your position
+            Start with ₹1,00,000. Beat the market!
             """)
-    
-    # Main content area
-    if not st.session_state.game_started:
-        # Welcome screen
-        st.markdown("""### 🎯 Welcome to the Market Prediction Game!
         
-Test your trading skills against the market using real 15-minute intraday data.
-
-**How to Play:**
-1. **Select a stock and date** from the sidebar (random or manual)
-2. **Analyze the chart** - first 3 candles are shown
-3. **Take a position** - LONG if you think price will go up, SHORT if down
-4. **Advance time** - Click NEXT to reveal the next candle
-5. **Close your position** - Lock in your profit or loss
-6. **Repeat!** - Try to beat the market!
-
-**💡 Tips:**
-- Look for patterns in the first few candles
-- Consider volume and momentum
-- Don't let emotions drive your decisions
-- Practice risk management
-
----
-
-👈 **Use the sidebar to start the game!**
-""")
-        
-        # Show overall stats if there are any trades
+        # Reset button if there are trades
         if st.session_state.total_trades > 0:
-            st.markdown("<br>", unsafe_allow_html=True)
-            st.subheader("📊 Your Statistics")
-            col1, col2, col3, col4 = st.columns(4)
-            
-            total_return = ((st.session_state.capital - st.session_state.initial_capital) / st.session_state.initial_capital) * 100
-            win_rate = (st.session_state.winning_trades / st.session_state.total_trades * 100) if st.session_state.total_trades > 0 else 0
-            
-            with col1:
-                st.metric("Capital", f"₹{st.session_state.capital:,.2f}")
-            with col2:
-                st.metric("Total P&L", f"₹{st.session_state.realized_pnl:,.2f}",
-                         delta=f"{total_return:.2f}%")
-            with col3:
-                st.metric("Total Trades", st.session_state.total_trades)
-            with col4:
-                st.metric("Win Rate", f"{win_rate:.1f}%")
+            if st.button("🔃 Reset All Progress", use_container_width=True):
+                reset_game()
+                st.rerun()
     
     else:
-        # Game screen
-        # Top metrics row
-        col1, col2, col3, col4, col5 = st.columns(5)
-        st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown("<br>", unsafe_allow_html=True)
+        # Game screen - Mobile friendly vertical layout
         current_price = get_current_price()
         unrealized_pnl = calculate_current_pnl()
         total_value = st.session_state.capital + unrealized_pnl
         total_return = ((total_value - st.session_state.initial_capital) / st.session_state.initial_capital) * 100
         win_rate = (st.session_state.winning_trades / st.session_state.total_trades * 100) if st.session_state.total_trades > 0 else 0
-        # add a blank row for spacing
+        candles_remaining = len(st.session_state.day_data) - st.session_state.current_time_index if st.session_state.day_data is not None else 0
         
-        with col1:
-            st.markdown("<p class='metric-label'>💼 Capital</p>", unsafe_allow_html=True)
-            st.markdown(f"<p class='metric-value'>₹{st.session_state.capital:,.0f}</p>", unsafe_allow_html=True)
-        with col2:
-            st.markdown("<p class='metric-label'>📊 Unrealized P&L</p>", unsafe_allow_html=True)
-            st.markdown(f"<p class='metric-value'>₹{unrealized_pnl:,.0f}</p>", unsafe_allow_html=True)
-            st.markdown(f"<p class='metric-delta'>Day: ₹{st.session_state.day_pnl:,.0f}</p>", unsafe_allow_html=True)
-        with col3:
-            st.markdown("<p class='metric-label'>📈 Total Return</p>", unsafe_allow_html=True)
-            st.markdown(f"<p class='metric-value'>{total_return:+.1f}%</p>", unsafe_allow_html=True)
-        with col4:
-            st.markdown("<p class='metric-label'>🎯 Win Rate</p>", unsafe_allow_html=True)
-            st.markdown(f"<p class='metric-value'>{win_rate:.0f}%</p>", unsafe_allow_html=True)
-            st.markdown(f"<p class='metric-delta'>{st.session_state.winning_trades}/{st.session_state.total_trades} trades</p>", unsafe_allow_html=True)
-        with col5:
-            candles_remaining = len(st.session_state.day_data) - st.session_state.current_time_index if st.session_state.day_data is not None else 0
-            st.markdown("<p class='metric-label'>⏱️ Candles Left</p>", unsafe_allow_html=True)
-            st.markdown(f"<p class='metric-value'>{candles_remaining}</p>", unsafe_allow_html=True)
+        # Stock info header
+        current_time = ""
+        if st.session_state.day_data is not None and len(st.session_state.day_data) > 0:
+            idx = min(st.session_state.current_time_index - 1, len(st.session_state.day_data) - 1)
+            if idx >= 0:
+                current_time = st.session_state.day_data.index[idx].strftime('%H:%M')
         
-        # Chart and controls side by side
-        chart_col, controls_col = st.columns([3, 1])
+        st.markdown(f'''
+        <div class="stock-info">
+            <strong>{st.session_state.current_ticker}</strong> | {st.session_state.current_date} | {current_time} | 
+            <span style="font-size:16px;">₹{current_price:,.2f}</span> | 
+            ⏱️ {candles_remaining} left
+        </div>
+        ''', unsafe_allow_html=True)
         
-        with chart_col:
-            chart = create_chart()
-            if chart:
-                st.plotly_chart(chart, width='stretch', key="main_chart")
+        # Compact metrics row
+        pnl_class = "profit" if unrealized_pnl >= 0 else "loss"
+        return_class = "profit" if total_return >= 0 else "loss"
         
-        with controls_col:
-            # Trading buttons - vertical layout with custom colors
-            # Apply button styling: LONG=Green, SHORT=Red, others=Grey
-            st.markdown("""
-                <style>
-                /* LONG button - Green */
-                button[kind="secondary"]:has(p:contains("LONG")),
-                div[data-testid="stButton"] button:contains("LONG") {
-                    background-color: #00c853 !important;
-                    border-color: #00c853 !important;
-                    color: white !important;
-                }
-                /* SHORT button - Red */
-                button[kind="secondary"]:has(p:contains("SHORT")),
-                div[data-testid="stButton"] button:contains("SHORT") {
-                    background-color: #ff1744 !important;
-                    border-color: #ff1744 !important;
-                    color: white !important;
-                }
-                /* NEXT and CLOSE buttons - Grey */
-                button[kind="secondary"]:has(p:contains("NEXT")),
-                div[data-testid="stButton"] button:contains("NEXT"),
-                button[kind="secondary"]:has(p:contains("CLOSE")),
-                div[data-testid="stButton"] button:contains("CLOSE") {
-                    background-color: #6c757d !important;
-                    border-color: #6c757d !important;
-                    color: white !important;
-                }
-                </style>
-            """, unsafe_allow_html=True)
-            
-            if st.session_state.day_ended:
-                st.warning("📅 Day ended!")
-            else:
-                if st.session_state.position is None:
-                    if st.button("📈 LONG", width='stretch', key="btn_long"):
+        st.markdown(f'''
+        <div class="metric-row">
+            <div class="metric-card">
+                <div class="metric-label">💼 Capital</div>
+                <div class="metric-value">₹{st.session_state.capital:,.0f}</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">📊 Open P&L</div>
+                <div class="metric-value {pnl_class}">₹{unrealized_pnl:+,.0f}</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">📈 Return</div>
+                <div class="metric-value {return_class}">{total_return:+.1f}%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">🎯 Win</div>
+                <div class="metric-value">{win_rate:.0f}%</div>
+                <div class="metric-delta">{st.session_state.winning_trades}/{st.session_state.total_trades}</div>
+            </div>
+        </div>
+        ''', unsafe_allow_html=True)
+        
+        # Chart - full width
+        chart = create_chart()
+        if chart:
+            st.plotly_chart(chart, use_container_width=True, key="main_chart")
+        
+        # Position status and trading controls
+        if st.session_state.position is not None:
+            pnl = calculate_current_pnl()
+            pnl_class = "position-long" if st.session_state.position == 'LONG' else "position-short"
+            pnl_color = "profit" if pnl >= 0 else "loss"
+            st.markdown(f'''
+            <div class="position-card {pnl_class}">
+                <strong>{st.session_state.position}</strong> @ ₹{st.session_state.entry_price:,.0f} | 
+                Qty: {st.session_state.position_size} | 
+                P&L: <span class="{pnl_color}"><strong>₹{pnl:+,.0f}</strong></span>
+            </div>
+            ''', unsafe_allow_html=True)
+        
+        # Trading buttons - 2x2 grid for mobile
+        if st.session_state.day_ended:
+            st.warning("📅 Market day ended!")
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("🔄 New Day", use_container_width=True):
+                    reset_day()
+                    st.session_state.game_started = False
+                    st.rerun()
+            with col2:
+                if st.button("🔃 Reset All", use_container_width=True):
+                    reset_game()
+                    st.rerun()
+        else:
+            if st.session_state.position is None:
+                # No position - show LONG/SHORT and NEXT
+                col1, col2 = st.columns(2)
+                with col1:
+                    if st.button("📈 LONG", use_container_width=True, key="btn_long", type="primary"):
                         if open_position('LONG'):
                             st.rerun()
-                    if st.button("📉 SHORT", width='stretch', key="btn_short"):
+                with col2:
+                    if st.button("📉 SHORT", use_container_width=True, key="btn_short"):
                         if open_position('SHORT'):
                             st.rerun()
-                else:
-                    pnl = calculate_current_pnl()
-                    pnl_color = "🟢" if pnl >= 0 else "🔴"
-                    st.markdown(f"**{st.session_state.position}** @ ₹{st.session_state.entry_price:,.0f}")
-                    st.markdown(f"{pnl_color} P&L: **₹{pnl:+,.0f}**")
-                    if st.button(f"💰 CLOSE", width='stretch', key="btn_close"):
-                        close_position()
-                        st.rerun()
                 
-                st.divider()
-                if st.button("⏭️ NEXT", width='stretch', key="btn_next"):
+                if st.button("⏭️ NEXT CANDLE", use_container_width=True, key="btn_next"):
                     advance_candle()
                     st.rerun()
+            else:
+                # In position - show CLOSE and NEXT
+                col1, col2 = st.columns(2)
+                with col1:
+                    if st.button("💰 CLOSE", use_container_width=True, key="btn_close", type="primary"):
+                        close_position()
+                        st.rerun()
+                with col2:
+                    if st.button("⏭️ NEXT", use_container_width=True, key="btn_next"):
+                        advance_candle()
+                        st.rerun()
+        
+        # Compact controls row
+        st.markdown("---")
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            if st.button("🔄 New Day", use_container_width=True, key="new_day_btn"):
+                reset_day()
+                st.session_state.game_started = False
+                st.rerun()
+        with col2:
+            if st.button("🔃 Reset", use_container_width=True, key="reset_btn"):
+                reset_game()
+                st.rerun()
+        with col3:
+            pass  # Empty for balance
         
         # Compact trade history in expander
-        with st.expander("📜 Trade History", expanded=False):
+        with st.expander("📜 Trade History"):
             day_trades = [t for t in st.session_state.trade_history 
                          if t['date'] == st.session_state.current_date]
             
@@ -877,18 +912,18 @@ Test your trading skills against the market using real 15-minute intraday data.
                 trade_df['pnl_formatted'] = trade_df['pnl'].apply(lambda x: f"₹{x:+,.0f}")
                 display_df = trade_df[['type', 'entry_time', 'exit_time', 'pnl_formatted']]
                 display_df.columns = ['Type', 'Entry', 'Exit', 'P&L']
-                st.dataframe(display_df, width='stretch', hide_index=True, height=150)
+                st.dataframe(display_df, use_container_width=True, hide_index=True, height=120)
             else:
                 st.info("No trades yet")
             
             if len(st.session_state.trade_history) > len(day_trades):
-                st.markdown("**All-Time Trades:**")
+                st.markdown("**All Trades:**")
                 all_trades_df = pd.DataFrame(st.session_state.trade_history)
                 all_trades_df['pnl_formatted'] = all_trades_df['pnl'].apply(lambda x: f"₹{x:+,.0f}")
                 all_trades_df['date'] = all_trades_df['date'].astype(str)
                 display_all = all_trades_df[['ticker', 'date', 'type', 'pnl_formatted']]
                 display_all.columns = ['Ticker', 'Date', 'Type', 'P&L']
-                st.dataframe(display_all, width='stretch', hide_index=True, height=150)
+                st.dataframe(display_all, use_container_width=True, hide_index=True, height=120)
 
 
 if __name__ == "__main__":
