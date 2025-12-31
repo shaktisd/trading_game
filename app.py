@@ -707,7 +707,6 @@ def main():
                         st.rerun()
         
         # Compact controls row
-        st.markdown("---")
         col1, col2, col3 = st.columns(3)
         with col1:
             if st.button("🔄 New Day", width='stretch', key="new_day_btn"):
