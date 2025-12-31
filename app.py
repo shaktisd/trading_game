@@ -509,7 +509,7 @@ def main():
     # Main content area
     if not st.session_state.game_started:
         # Welcome screen
-        st.title('🎮 Market Prediction Game 📈')
+        st.title('Predict the Market!')
         
         # Show overall stats if there are any trades
         if st.session_state.total_trades > 0:
@@ -631,15 +631,9 @@ def main():
                 st.rerun()
     
     else:
-        # Game screen
+        # Game screen - Stock info header at the very top
         current_price = get_current_price()
-        unrealized_pnl = calculate_current_pnl()
-        total_value = st.session_state.capital + unrealized_pnl
-        total_return = ((total_value - st.session_state.initial_capital) / st.session_state.initial_capital) * 100
-        win_rate = (st.session_state.winning_trades / st.session_state.total_trades * 100) if st.session_state.total_trades > 0 else 0
         candles_remaining = len(st.session_state.day_data) - st.session_state.current_time_index if st.session_state.day_data is not None else 0
-        
-        # Stock info header
         current_time = ""
         if st.session_state.day_data is not None and len(st.session_state.day_data) > 0:
             idx = min(st.session_state.current_time_index - 1, len(st.session_state.day_data) - 1)
@@ -647,6 +641,12 @@ def main():
                 current_time = st.session_state.day_data.index[idx].strftime('%H:%M')
         
         st.markdown(f"**{st.session_state.current_ticker}** | {st.session_state.current_date} | {current_time} | ₹{current_price:,.2f} | ⏱️ {candles_remaining} left")
+        
+        # Calculate metrics for later use
+        unrealized_pnl = calculate_current_pnl()
+        total_value = st.session_state.capital + unrealized_pnl
+        total_return = ((total_value - st.session_state.initial_capital) / st.session_state.initial_capital) * 100
+        win_rate = (st.session_state.winning_trades / st.session_state.total_trades * 100) if st.session_state.total_trades > 0 else 0
         
         # Chart - full width
         chart = create_chart()
