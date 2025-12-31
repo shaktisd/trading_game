@@ -62,147 +62,7 @@ COLORS = {
     'candle_down': '#ff4757',
 }
 
-# ============================================================================
-# CUSTOM CSS - Mobile Friendly
-# ============================================================================
-st.markdown("""
-<style>
-    /* Hide sidebar completely */
-    [data-testid="stSidebar"] {
-        display: none;
-    }
-    
-    /* Mobile-friendly container */
-    .block-container {
-        padding-top: 1rem !important;
-        padding-bottom: 1rem !important;
-        padding-left: 0.5rem !important;
-        padding-right: 0.5rem !important;
-        max-width: 100% !important;
-    }
-    
-    .main-header {
-        font-size: 1.5rem !important;
-        font-weight: 700 !important;
-        text-align: center;
-        padding: 0.8rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 12px;
-        margin-bottom: 1rem;
-        color: #ffffff !important;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        border: none;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    }
-    
-    /* Compact metric styling for mobile */
-    .metric-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-    }
-    .metric-card {
-        flex: 1 1 45%;
-        min-width: 80px;
-        background: linear-gradient(135deg, #2d3748, #1a202c);
-        border-radius: 10px;
-        padding: 0.6rem;
-        text-align: center;
-        border: 1px solid #4a5568;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-    .metric-label {
-        font-size: 11px !important;
-        color: #a0aec0 !important;
-        margin-bottom: 4px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    .metric-value {
-        font-size: 18px !important;
-        font-weight: 700 !important;
-        color: #ffffff !important;
-    }
-    .metric-delta {
-        font-size: 10px !important;
-        color: #a0aec0 !important;
-    }
-    
-    .profit { color: #48bb78 !important; }
-    .loss { color: #fc8181 !important; }
-    .neutral { color: #ecc94b !important; }
-    
-    /* Large touch-friendly buttons */
-    .stButton>button {
-        width: 100%;
-        font-weight: bold;
-        font-size: 16px !important;
-        padding: 0.75rem 1rem !important;
-        min-height: 50px !important;
-        border-radius: 10px !important;
-    }
-    
-    /* Position info card */
-    .position-card {
-        background: linear-gradient(135deg, #2d3748, #1a202c);
-        border-radius: 10px;
-        padding: 0.8rem;
-        text-align: center;
-        margin-bottom: 0.5rem;
-        border: 2px solid #4a5568;
-        color: #ffffff !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-    .position-card strong {
-        color: #ffffff !important;
-    }
-    .position-long {
-        border-color: #48bb78 !important;
-        background: linear-gradient(135deg, rgba(72, 187, 120, 0.2), rgba(72, 187, 120, 0.1)) !important;
-    }
-    .position-short {
-        border-color: #fc8181 !important;
-        background: linear-gradient(135deg, rgba(252, 129, 129, 0.2), rgba(252, 129, 129, 0.1)) !important;
-    }
-    
-    /* Compact chart */
-    .stPlotlyChart {
-        margin: 0 !important;
-    }
-    
-    /* Smaller expanders */
-    .streamlit-expanderHeader {
-        font-size: 14px !important;
-    }
-    
-    /* Stock info compact */
-    .stock-info {
-        text-align: center;
-        font-size: 14px !important;
-        padding: 0.6rem;
-        background: linear-gradient(135deg, #2d3748, #1a202c);
-        border-radius: 8px;
-        margin-bottom: 0.8rem;
-        color: #ffffff !important;
-        border: 1px solid #4a5568;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-    .stock-info strong {
-        color: #ecc94b !important;
-    }
-    
-    /* Tab styling */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-    }
-    .stTabs [data-baseweb="tab"] {
-        padding: 10px 20px;
-        font-weight: 600;
-    }
-</style>
-""", unsafe_allow_html=True)
+
 
 # ============================================================================
 # DATA LOADING FUNCTIONS
@@ -549,13 +409,13 @@ def create_chart():
     if len(visible_data) == 0:
         return None
     
-    # Create subplots
+    # Create subplots with better separation
     fig = make_subplots(
         rows=2, cols=1,
         shared_xaxes=True,
-        vertical_spacing=0.22,
-        row_heights=[0.8, 0.5],
-        subplot_titles=('Price Chart', 'Returns Chart')
+        vertical_spacing=0.15,
+        row_heights=[0.7, 0.3],
+        subplot_titles=('📊 Price Chart', '📈 Returns')
     )
     
     # Candlestick chart
@@ -618,14 +478,17 @@ def create_chart():
             row=2, col=1
         )
     
-    # Update layout - compact for mobile
+    # Update layout - prominent and professional
     fig.update_layout(
-        title=None,  # Remove title to save space on mobile
+        title=None,
         template='plotly_dark',
-        height=300,  # Shorter for mobile
+        height=450,  # Taller for better visibility
         showlegend=False,
         xaxis_rangeslider_visible=False,
-        margin=dict(l=35, r=10, t=10, b=25),
+        margin=dict(l=40, r=15, t=35, b=30),
+        paper_bgcolor='rgba(26, 32, 44, 0.8)',
+        plot_bgcolor='rgba(26, 32, 44, 0.5)',
+        font=dict(size=11),
     )
     
     fig.update_xaxes(title_text="Time", row=2, col=1)
@@ -644,36 +507,26 @@ def main():
     # Load tickers
     tickers, company_names = load_nifty_500_tickers()
     
-    # Main content area - no sidebar
+    # Main content area
     if not st.session_state.game_started:
-        # Welcome screen - Mobile friendly
-        st.markdown('<div class="main-header">🎮 Market Prediction Game 📈</div>', unsafe_allow_html=True)
+        # Welcome screen
+        st.title('🎮 Market Prediction Game 📈')
         
         # Show overall stats if there are any trades
         if st.session_state.total_trades > 0:
             total_return = ((st.session_state.capital - st.session_state.initial_capital) / st.session_state.initial_capital) * 100
             win_rate = (st.session_state.winning_trades / st.session_state.total_trades * 100) if st.session_state.total_trades > 0 else 0
             
-            st.markdown(f'''
-            <div class="metric-row">
-                <div class="metric-card">
-                    <div class="metric-label">💼 Capital</div>
-                    <div class="metric-value">₹{st.session_state.capital:,.0f}</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">📊 P&L</div>
-                    <div class="metric-value {"profit" if st.session_state.realized_pnl >= 0 else "loss"}">₹{st.session_state.realized_pnl:+,.0f}</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">🎯 Trades</div>
-                    <div class="metric-value">{st.session_state.total_trades}</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">✅ Win Rate</div>
-                    <div class="metric-value">{win_rate:.0f}%</div>
-                </div>
-            </div>
-            ''', unsafe_allow_html=True)
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric("💼 Capital", f"₹{st.session_state.capital:,.0f}")
+            with col2:
+                st.metric("📊 P&L", f"₹{st.session_state.realized_pnl:+,.0f}", 
+                         delta_color="normal" if st.session_state.realized_pnl >= 0 else "inverse")
+            with col3:
+                st.metric("🎯 Trades", st.session_state.total_trades)
+            with col4:
+                st.metric("✅ Win Rate", f"{win_rate:.0f}%", f"{st.session_state.winning_trades}/{st.session_state.total_trades}")
         
         # Stock Selection Section
         st.markdown("### 🎯 Start Trading")
@@ -779,7 +632,7 @@ def main():
                 st.rerun()
     
     else:
-        # Game screen - Mobile friendly vertical layout
+        # Game screen
         current_price = get_current_price()
         unrealized_pnl = calculate_current_pnl()
         total_value = st.session_state.capital + unrealized_pnl
@@ -794,39 +647,7 @@ def main():
             if idx >= 0:
                 current_time = st.session_state.day_data.index[idx].strftime('%H:%M')
         
-        st.markdown(f'''
-        <div class="stock-info">
-            <strong>{st.session_state.current_ticker}</strong> | {st.session_state.current_date} | {current_time} | 
-            <span style="font-size:16px;">₹{current_price:,.2f}</span> | 
-            ⏱️ {candles_remaining} left
-        </div>
-        ''', unsafe_allow_html=True)
-        
-        # Compact metrics row
-        pnl_class = "profit" if unrealized_pnl >= 0 else "loss"
-        return_class = "profit" if total_return >= 0 else "loss"
-        
-        st.markdown(f'''
-        <div class="metric-row">
-            <div class="metric-card">
-                <div class="metric-label">💼 Capital</div>
-                <div class="metric-value">₹{st.session_state.capital:,.0f}</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-label">📊 Open P&L</div>
-                <div class="metric-value {pnl_class}">₹{unrealized_pnl:+,.0f}</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-label">📈 Return</div>
-                <div class="metric-value {return_class}">{total_return:+.1f}%</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-label">🎯 Win</div>
-                <div class="metric-value">{win_rate:.0f}%</div>
-                <div class="metric-delta">{st.session_state.winning_trades}/{st.session_state.total_trades}</div>
-            </div>
-        </div>
-        ''', unsafe_allow_html=True)
+        st.subheader(f"{st.session_state.current_ticker} | {st.session_state.current_date} | {current_time} | ₹{current_price:,.2f} | ⏱️ {candles_remaining} left")
         
         # Chart - full width
         chart = create_chart()
@@ -836,17 +657,9 @@ def main():
         # Position status and trading controls
         if st.session_state.position is not None:
             pnl = calculate_current_pnl()
-            pnl_class = "position-long" if st.session_state.position == 'LONG' else "position-short"
-            pnl_color = "profit" if pnl >= 0 else "loss"
-            st.markdown(f'''
-            <div class="position-card {pnl_class}">
-                <strong>{st.session_state.position}</strong> @ ₹{st.session_state.entry_price:,.0f} | 
-                Qty: {st.session_state.position_size} | 
-                P&L: <span class="{pnl_color}"><strong>₹{pnl:+,.0f}</strong></span>
-            </div>
-            ''', unsafe_allow_html=True)
+            st.info(f"**{st.session_state.position} Position** @ ₹{st.session_state.entry_price:,.0f} | Qty: {st.session_state.position_size} | P&L: **₹{pnl:+,.0f}**")
         
-        # Trading buttons - 2x2 grid for mobile
+        # Trading buttons - single row layout for visibility
         if st.session_state.day_ended:
             st.warning("📅 Market day ended!")
             col1, col2 = st.columns(2)
@@ -861,8 +674,8 @@ def main():
                     st.rerun()
         else:
             if st.session_state.position is None:
-                # No position - show LONG/SHORT and NEXT
-                col1, col2 = st.columns(2)
+                # No position - show LONG, SHORT, NEXT in a row
+                col1, col2, col3 = st.columns(3)
                 with col1:
                     if st.button("📈 LONG", use_container_width=True, key="btn_long", type="primary"):
                         if open_position('LONG'):
@@ -871,19 +684,19 @@ def main():
                     if st.button("📉 SHORT", use_container_width=True, key="btn_short"):
                         if open_position('SHORT'):
                             st.rerun()
-                
-                if st.button("⏭️ NEXT CANDLE", use_container_width=True, key="btn_next"):
-                    advance_candle()
-                    st.rerun()
+                with col3:
+                    if st.button("⏭️ NEXT", use_container_width=True, key="btn_next"):
+                        advance_candle()
+                        st.rerun()
             else:
-                # In position - show CLOSE and NEXT
-                col1, col2 = st.columns(2)
+                # In position - show CLOSE and NEXT in a row
+                col1, col2 = st.columns([1, 1])
                 with col1:
-                    if st.button("💰 CLOSE", use_container_width=True, key="btn_close", type="primary"):
+                    if st.button("💰 CLOSE POSITION", use_container_width=True, key="btn_close", type="primary"):
                         close_position()
                         st.rerun()
                 with col2:
-                    if st.button("⏭️ NEXT", use_container_width=True, key="btn_next"):
+                    if st.button("⏭️ NEXT CANDLE", use_container_width=True, key="btn_next"):
                         advance_candle()
                         st.rerun()
         
@@ -924,6 +737,20 @@ def main():
                 display_all = all_trades_df[['ticker', 'date', 'type', 'pnl_formatted']]
                 display_all.columns = ['Ticker', 'Date', 'Type', 'P&L']
                 st.dataframe(display_all, use_container_width=True, hide_index=True, height=120)
+        
+        # Metrics row - moved to bottom
+        st.markdown("---")
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.metric("💼 Capital", f"₹{st.session_state.capital:,.0f}")
+        with col2:
+            st.metric("📊 Open P&L", f"₹{unrealized_pnl:+,.0f}", 
+                     delta_color="normal" if unrealized_pnl >= 0 else "inverse")
+        with col3:
+            st.metric("📈 Return", f"{total_return:+.1f}%",
+                     delta_color="normal" if total_return >= 0 else "inverse")
+        with col4:
+            st.metric("🎯 Win Rate", f"{win_rate:.0f}%", f"{st.session_state.winning_trades}/{st.session_state.total_trades}")
 
 
 if __name__ == "__main__":
