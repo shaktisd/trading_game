@@ -479,7 +479,6 @@ def create_chart():
     
     # Update layout - prominent and professional
     fig.update_layout(
-        autosize=True,
         title="Predict the Market!",
         template='plotly_dark',
         height=450,  # Taller for better visibility
