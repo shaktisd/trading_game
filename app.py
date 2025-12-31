@@ -479,12 +479,13 @@ def create_chart():
     
     # Update layout - prominent and professional
     fig.update_layout(
-        title=None,
+        autosize=True,
+        title="Predict the Market!",
         template='plotly_dark',
         height=450,  # Taller for better visibility
         showlegend=False,
         xaxis_rangeslider_visible=False,
-        margin=dict(l=40, r=15, t=35, b=30),
+        margin=dict(l=20, r=15, t=5, b=30),
         paper_bgcolor='rgba(26, 32, 44, 0.8)',
         plot_bgcolor='rgba(26, 32, 44, 0.5)',
         font=dict(size=11),
@@ -650,8 +651,12 @@ def main():
         
         # Chart - full width
         chart = create_chart()
+        # Define the configuration dictionary
+        config = {
+            'displayModeBar': False
+        }
         if chart:
-            st.plotly_chart(chart, width='stretch', key="main_chart", config={'displayModeBar': False})
+            st.plotly_chart(chart, width='stretch', key="main_chart", config=config)
         
         # Position status and trading controls
         if st.session_state.position is not None:
