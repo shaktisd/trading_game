@@ -414,8 +414,7 @@ def create_chart():
         rows=2, cols=1,
         shared_xaxes=True,
         vertical_spacing=0.15,
-        row_heights=[0.7, 0.3],
-        subplot_titles=('📊 Price Chart', '📈 Returns')
+        row_heights=[0.7, 0.3]
     )
     
     # Candlestick chart
@@ -536,7 +535,7 @@ def main():
         
         with tab1:
             st.markdown("Get a random stock and date to trade:")
-            if st.button("🎲 Generate Random Stock", type="primary", use_container_width=True):
+            if st.button("🎲 Generate Random Stock", type="primary", width='stretch'):
                 random_ticker = random.choice(tickers)
                 
                 with st.spinner(f"Loading {random_ticker}..."):
@@ -573,7 +572,7 @@ def main():
                 key="manual_ticker"
             )
             
-            if st.button("📥 Load Stock", use_container_width=True, key="load_stock_btn"):
+            if st.button("📥 Load Stock", width='stretch', key="load_stock_btn"):
                 with st.spinner(f"Loading {selected_ticker}..."):
                     stock_data = download_stock_data(selected_ticker)
                     if stock_data is not None:
@@ -593,7 +592,7 @@ def main():
                         key="manual_date"
                     )
                     
-                    if st.button("📈 Start Trading", type="primary", use_container_width=True):
+                    if st.button("📈 Start Trading", type="primary", width='stretch'):
                         day_data = get_day_data(stock_data, selected_date)
                         day_data = filter_market_hours(day_data)
                         
@@ -627,7 +626,7 @@ def main():
         
         # Reset button if there are trades
         if st.session_state.total_trades > 0:
-            if st.button("🔃 Reset All Progress", use_container_width=True):
+            if st.button("🔃 Reset All Progress", width='stretch'):
                 reset_game()
                 st.rerun()
     
@@ -652,7 +651,7 @@ def main():
         # Chart - full width
         chart = create_chart()
         if chart:
-            st.plotly_chart(chart, use_container_width=True, key="main_chart")
+            st.plotly_chart(chart, width='stretch', key="main_chart", config={'displayModeBar': False})
         
         # Position status and trading controls
         if st.session_state.position is not None:
@@ -664,39 +663,39 @@ def main():
             st.warning("📅 Market day ended!")
             col1, col2 = st.columns(2)
             with col1:
-                if st.button("🔄 New Day", use_container_width=True):
+                if st.button("🔄 New Day", width='stretch'):
                     reset_day()
                     st.session_state.game_started = False
                     st.rerun()
             with col2:
-                if st.button("🔃 Reset All", use_container_width=True):
+                if st.button("🔃 Reset All", width='stretch'):
                     reset_game()
                     st.rerun()
         else:
             if st.session_state.position is None:
                 # No position - show LONG, SHORT, NEXT in a row
-                col1, col2, col3 = st.columns(3)
+                col1, col2, col3 = st.columns([1, 1, 1])
                 with col1:
-                    if st.button("📈 LONG", use_container_width=True, key="btn_long", type="primary"):
+                    if st.button("📈 LONG", width='stretch', key="btn_long", type="primary"):
                         if open_position('LONG'):
                             st.rerun()
                 with col2:
-                    if st.button("📉 SHORT", use_container_width=True, key="btn_short"):
+                    if st.button("📉 SHORT", width='stretch', key="btn_short"):
                         if open_position('SHORT'):
                             st.rerun()
                 with col3:
-                    if st.button("⏭️ NEXT", use_container_width=True, key="btn_next"):
+                    if st.button("⏭️ NEXT", width='stretch', key="btn_next"):
                         advance_candle()
                         st.rerun()
             else:
                 # In position - show CLOSE and NEXT in a row
                 col1, col2 = st.columns([1, 1])
                 with col1:
-                    if st.button("💰 CLOSE POSITION", use_container_width=True, key="btn_close", type="primary"):
+                    if st.button("💰 CLOSE POSITION", width='stretch', key="btn_close", type="primary"):
                         close_position()
                         st.rerun()
                 with col2:
-                    if st.button("⏭️ NEXT CANDLE", use_container_width=True, key="btn_next"):
+                    if st.button("⏭️ NEXT CANDLE", width='stretch', key="btn_next"):
                         advance_candle()
                         st.rerun()
         
@@ -704,12 +703,12 @@ def main():
         st.markdown("---")
         col1, col2, col3 = st.columns(3)
         with col1:
-            if st.button("🔄 New Day", use_container_width=True, key="new_day_btn"):
+            if st.button("🔄 New Day", width='stretch', key="new_day_btn"):
                 reset_day()
                 st.session_state.game_started = False
                 st.rerun()
         with col2:
-            if st.button("🔃 Reset", use_container_width=True, key="reset_btn"):
+            if st.button("🔃 Reset", width='stretch', key="reset_btn"):
                 reset_game()
                 st.rerun()
         with col3:
@@ -725,7 +724,7 @@ def main():
                 trade_df['pnl_formatted'] = trade_df['pnl'].apply(lambda x: f"₹{x:+,.0f}")
                 display_df = trade_df[['type', 'entry_time', 'exit_time', 'pnl_formatted']]
                 display_df.columns = ['Type', 'Entry', 'Exit', 'P&L']
-                st.dataframe(display_df, use_container_width=True, hide_index=True, height=120)
+                st.dataframe(display_df, width='stretch', hide_index=True, height=120)
             else:
                 st.info("No trades yet")
             
@@ -736,7 +735,7 @@ def main():
                 all_trades_df['date'] = all_trades_df['date'].astype(str)
                 display_all = all_trades_df[['ticker', 'date', 'type', 'pnl_formatted']]
                 display_all.columns = ['Ticker', 'Date', 'Type', 'P&L']
-                st.dataframe(display_all, use_container_width=True, hide_index=True, height=120)
+                st.dataframe(display_all, width='stretch', hide_index=True, height=120)
         
         # Metrics row - moved to bottom
         st.markdown("---")
