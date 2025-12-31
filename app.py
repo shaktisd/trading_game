@@ -481,10 +481,10 @@ def create_chart():
     fig.update_layout(
         title="Predict the Market!",
         template='plotly_dark',
-        height=450,  # Taller for better visibility
+        height=400,  # Taller for better visibility
         showlegend=False,
         xaxis_rangeslider_visible=False,
-        margin=dict(l=20, r=15, t=10, b=30),
+        margin=dict(l=20, r=15, t=15, b=30),
         paper_bgcolor='rgba(26, 32, 44, 0.8)',
         plot_bgcolor='rgba(26, 32, 44, 0.5)',
         font=dict(size=11),
