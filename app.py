@@ -484,7 +484,7 @@ def create_chart():
         height=450,  # Taller for better visibility
         showlegend=False,
         xaxis_rangeslider_visible=False,
-        margin=dict(l=20, r=15, t=5, b=30),
+        margin=dict(l=20, r=15, t=10, b=30),
         paper_bgcolor='rgba(26, 32, 44, 0.8)',
         plot_bgcolor='rgba(26, 32, 44, 0.5)',
         font=dict(size=11),
